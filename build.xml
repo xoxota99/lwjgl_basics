@@ -1,0 +1,105 @@
+<project name="lwjgl_basics" basedir="." default="zip">
+	<property name="src.test.dir" value="src/test" />
+	<property name="src.main.dir" value="src/main" />
+	<property name="bin.dir" value="bin" />
+	<property name="dist.dir" value="dist" />
+	<property name="lib.dir" value="lib" />
+
+	<property name="release.natives" value="natives/" />
+	<property name="release.jar" value="${ant.project.name}.jar" />
+
+
+	<path id="lib.path.ref">
+		<fileset dir="${lib.dir}" includes="**/*.jar" />
+	</path>
+
+	<target name="init">
+		<tstamp />
+		<mkdir dir="${bin.dir}/classes" />
+		<mkdir dir="${dist.dir}/lib" />
+		<mkdir dir="${dist.dir}/natives" />
+		<mkdir dir="${dist.dir}/res" />
+	</target>
+
+	<target name="clean">
+		<delete dir="${bin.dir}" />
+		<delete dir="${dist.dir}" />
+	</target>
+
+	<target name="download-libs">
+		<get src="http://repo1.maven.org/maven2/net/java/jinput/jinput/2.0.5/jinput-2.0.5.jar" dest="${lib.dir}" skipExisting="true" verbose="true" />
+		<get src="http://repo1.maven.org/maven2/net/java/jutils/jutils/1.0.0/jutils-1.0.0.jar" dest="${lib.dir}" skipExisting="true" verbose="true" />
+		<get src="http://repo1.maven.org/maven2/org/lwjgl/lwjgl/lwjgl_util/2.8.5/lwjgl_util-2.8.5.jar" dest="${lib.dir}" skipExisting="true" verbose="true" />
+		<get src="http://www.slick2d.org/downloads/slick.jar" dest="${lib.dir}" skipExisting="true" verbose="true" />
+	</target>
+
+	<target name="compile" depends="clean, init, download-libs">
+		<javac debug="yes" source="1.6" srcdir="${src.main.dir}/java" destdir="${bin.dir}/classes" includeantruntime="false">
+			<classpath refid="lib.path.ref" />
+		</javac>
+	</target>
+
+	<target name="jar" depends="compile">
+		<delete file="dist/${release.jar}" />
+		<jar destfile="dist/${release.jar}">
+			<fileset dir="bin">
+				<include name="classes/*" />
+			</fileset>
+		</jar>
+	</target>
+
+	<target name="copylibs">
+		<!-- cp lib/*.jar dist/lib/. -->
+		<copy todir="${dist.dir}/lib">
+			<fileset dir="${lib.dir}">
+				<include name="*.jar" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="copynatives">
+		<!-- cp lib/natives/* dist/natives/. -->
+		<copy todir="${dist.dir}/natives">
+			<fileset dir="${lib.dir}/natives">
+				<include name="*.dll" />
+				<include name="*.so" />
+				<include name="*.jnilib" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="copyscripts">
+		<!-- cp src/main/scripts/* dist/. -->
+		<copy todir="${dist.dir}">
+			<fileset dir="${src.main.dir}/scripts">
+				<include name="*.sh" />
+				<include name="*.bat" />
+			</fileset>
+			<filterset>
+				<filter token="release.natives" value="${release.natives}" />
+				<filter token="release.jar" value="${release.jar}" />
+			</filterset>
+		</copy>
+		<!-- TODO: Figure out permissions. -->
+	</target>
+
+	<target name="copyres">
+		<!-- cp src/main/scripts/* dist/. -->
+		<copy todir="${dist.dir}/res">
+			<fileset dir="${src.main.dir}/res">
+				<include name="**/*" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="copyall" depends="copylibs, copynatives, copyscripts, copyres" />
+
+	<target name="zip" depends="jar, copyall" description="Create a distributable zip file, including native libs and executable scripts.">
+		<zip destfile="dist/${ant.project.name}-release.zip">
+			<fileset dir="${dist.dir}">
+				<include name="**/*" />
+			</fileset>
+		</zip>
+	</target>
+
+</project>
