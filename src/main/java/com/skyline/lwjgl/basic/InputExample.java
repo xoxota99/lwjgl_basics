@@ -6,6 +6,11 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 
+/**
+ * From http://ninjacave.com/lwjglbasics2
+ * @author phil
+ *
+ */
 public class InputExample {
 
 	public void start() {

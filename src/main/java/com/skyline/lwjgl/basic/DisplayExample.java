@@ -4,6 +4,11 @@ import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 
+/**
+ * From http://ninjacave.com/lwjglbasics1
+ * @author phil
+ *
+ */
 public class DisplayExample {
 
 	public void start() {

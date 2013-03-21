@@ -7,6 +7,11 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
 
+/**
+ * From http://ninjacave.com/lwjglbasics4
+ * @author phil
+ *
+ */
 public class TimerExample {
 
 	/** position of quad */

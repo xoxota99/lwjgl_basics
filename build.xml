@@ -4,6 +4,7 @@
 	<property name="bin.dir" value="bin" />
 	<property name="dist.dir" value="dist" />
 	<property name="lib.dir" value="lib" />
+	<property name="res.dir" value="res" />
 
 	<property name="release.natives" value="natives/" />
 	<property name="release.jar" value="${ant.project.name}.jar" />
@@ -15,10 +16,9 @@
 
 	<target name="init">
 		<tstamp />
-		<mkdir dir="${bin.dir}/classes" />
+		<mkdir dir="${bin.dir}" />
 		<mkdir dir="${dist.dir}/lib" />
 		<mkdir dir="${dist.dir}/natives" />
-		<mkdir dir="${dist.dir}/res" />
 	</target>
 
 	<target name="clean">
@@ -34,17 +34,36 @@
 	</target>
 
 	<target name="compile" depends="clean, init, download-libs">
-		<javac debug="yes" source="1.6" srcdir="${src.main.dir}/java" destdir="${bin.dir}/classes" includeantruntime="false">
+		<javac debug="yes" source="1.6" srcdir="${src.main.dir}/java" destdir="${bin.dir}" includeantruntime="false">
 			<classpath refid="lib.path.ref" />
 		</javac>
 	</target>
 
-	<target name="jar" depends="compile">
+	<target name="copyres">
+		<!-- cp src/main/scripts/* dist/. -->
+		<copy todir="${bin.dir}/res">
+			<fileset dir="${res.dir}">
+				<include name="**/*" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="jar" depends="compile, copyres">
 		<delete file="dist/${release.jar}" />
+		<manifestclasspath property="mf.cp" jarfile="${release.jar}">
+			<classpath refid="lib.path.ref" />
+		</manifestclasspath>
+		<echo>Manifest ClassPath: ${mf.cp}</echo>
 		<jar destfile="dist/${release.jar}">
 			<fileset dir="bin">
-				<include name="classes/*" />
+				<include name="**/*" />
 			</fileset>
+			<manifest>
+				<attribute name="Built-By" value="${user.name}" />
+				<attribute name="Build-Jdk" value="${java.version}" />
+				<attribute name="Main-Class" value="${main.class}" />
+				<attribute name="Class-Path" value="${mf.cp}" />
+			</manifest>
 		</jar>
 	</target>
 
@@ -83,16 +102,7 @@
 		<!-- TODO: Figure out permissions. -->
 	</target>
 
-	<target name="copyres">
-		<!-- cp src/main/scripts/* dist/. -->
-		<copy todir="${dist.dir}/res">
-			<fileset dir="${src.main.dir}/res">
-				<include name="**/*" />
-			</fileset>
-		</copy>
-	</target>
-
-	<target name="copyall" depends="copylibs, copynatives, copyscripts, copyres" />
+	<target name="copyall" depends="copylibs, copynatives, copyscripts" />
 
 	<target name="zip" depends="jar, copyall" description="Create a distributable zip file, including native libs and executable scripts.">
 		<zip destfile="dist/${ant.project.name}-release.zip">

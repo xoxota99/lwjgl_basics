@@ -3,8 +3,14 @@ package com.skyline.lwjgl.basic;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
+
 import static org.lwjgl.opengl.GL11.*;
 
+/**
+ * From http://ninjacave.com/lwjglbasics3
+ * @author phil
+ *
+ */
 public class QuadExample {
 
 	public void start() {
@@ -22,6 +28,7 @@ public class QuadExample {
 		glOrtho(0, 800, 0, 600, 1, -1);
 		glMatrixMode(GL_MODELVIEW);
 
+		
 		while (!Display.isCloseRequested()) {
 			// Clear the screen and depth buffer
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
