@@ -1,14 +1,6 @@
-<project name="lwjgl_basics" basedir="." default="zip">
-	<property name="src.test.dir" value="src/test" />
-	<property name="src.main.dir" value="src/main" />
-	<property name="bin.dir" value="bin" />
-	<property name="dist.dir" value="dist" />
-	<property name="lib.dir" value="lib" />
-	<property name="res.dir" value="res" />
-
-	<property name="release.natives" value="natives/" />
-	<property name="release.jar" value="${ant.project.name}.jar" />
-
+<project basedir="." default="zip">
+	<property name="ant.dir" value="ant"/>
+	<property file="${ant.dir}/build.properties"/>
 
 	<path id="lib.path.ref">
 		<fileset dir="${lib.dir}" includes="**/*.jar" />
