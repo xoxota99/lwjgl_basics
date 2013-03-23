@@ -1,6 +1,7 @@
 <project basedir="." default="zip">
 	<property name="ant.dir" value="ant"/>
 	<property file="${ant.dir}/build.properties"/>
+	<property file="${ant.dir}/${user.name}.properties"/>
 
 	<path id="lib.path.ref">
 		<fileset dir="${lib.dir}" includes="**/*.jar" />
